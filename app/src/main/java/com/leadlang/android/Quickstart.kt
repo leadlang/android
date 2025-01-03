@@ -26,12 +26,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leadlang.android.ui.theme.LeadAndroidTheme
+import com.leadlang.android.utils.getTarget
 
 class Quickstart: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val ctx = this
+        val supported = !getTarget().isNullOrBlank()
 
         enableEdgeToEdge()
         setContent {
@@ -62,7 +64,7 @@ class Quickstart: ComponentActivity() {
                                 modifier = Modifier.padding(top = 30.dp)
                             )
                             Text(
-                                text = "Android",
+                                text = "${getTarget()}",
                                 modifier = Modifier.padding(top = 10.dp, bottom = 100.dp)
                             )
 
@@ -72,8 +74,13 @@ class Quickstart: ComponentActivity() {
                                     startActivity(intent)
                                     ctx.finish()
                                 },
+                                enabled = supported
                             ) {
-                                Text("Lets get started")
+                                if (supported) {
+                                    Text("Lets get started")
+                                } else {
+                                    Text("Unsupported Platform")
+                                }
                             }
                         }
                     }

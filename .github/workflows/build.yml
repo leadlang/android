@@ -28,6 +28,12 @@ jobs:
         shell: pwsh
         run: ./loader.ps1
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bin
+          path: ./app/src/main/jniLibs
+
       - name: Gradle Build
         uses: gradle/gradle-build-action@v2
         with:

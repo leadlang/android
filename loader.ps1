@@ -18,3 +18,6 @@ Copy-Item ./libloader/target/aarch64-linux-android/release/libloader -Destinatio
 Copy-Item ./libloader/target/x86_64-linux-android/release/libloader -Destination ./app/src/main/jniLibs/x86_64/libloader.so
 Copy-Item ./libloader/target/armv7-linux-androideabi/release/libloader -Destination ./app/src/main/jniLibs/armeabi-v7a/libloader.so
 Copy-Item ./libloader/target/i686-linux-android/release/libloader -Destination ./app/src/main/jniLibs/x86/libloader.so
+
+chmod 777 ./gradlew
+chmod 777 ./**/*

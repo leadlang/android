@@ -1,5 +1,7 @@
 package com.leadlang.android
 
+import android.app.DownloadManager
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,14 +28,28 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.leadlang.android.ui.theme.LeadAndroidTheme
+import com.leadlang.android.utils.getLeadmanDest
+import com.leadlang.android.utils.makeDwnUri
 
 class Download: ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    val download = this
+
     enableEdgeToEdge()
     setContent {
       var dwnProgValue by remember {
-        mutableFloatStateOf(0.35F)
+        mutableFloatStateOf(0.0F)
+      }
+
+      val downloader: DownloadManager = (getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?)!!
+
+      downloader.run {
+        val request = DownloadManager.Request(makeDwnUri())
+          .setDestinationUri(getLeadmanDest(download))
+
+        downloader.enqueue(request)
       }
 
       LeadAndroidTheme {

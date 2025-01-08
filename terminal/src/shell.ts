@@ -10,7 +10,13 @@ export function shell(term: Terminal) {
 }
 
 let cmd: string[] = [];
-let path: string = "/none";
+export let path: string = (() => {
+  try {
+    return Kotlin.defaultPath()
+  } catch (_) {
+    return ""
+  }
+})();
 
 const listener = (data: string) => {
   const t = terminal!!;
@@ -25,7 +31,7 @@ const listener = (data: string) => {
         const [binary, ...args] = cmd.join("").split(" ");
         cmd = [];
 
-        parse(path, t, binary, args);
+        parse(path, (s) => path = s, t, binary, args);
       }
     } catch (e) {
       t.write(`\x1b[31m${e}\x1b[m`);
@@ -36,8 +42,10 @@ const listener = (data: string) => {
   }
   // Backspace
   else if (data === "\x7F") {
-    cmd.pop();
-    t.write("\b \b");
+    if (cmd.length) {
+      cmd.pop();
+      t.write("\b \b");
+    }
   }
   else {
     cmd.push(data);

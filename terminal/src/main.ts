@@ -4,7 +4,7 @@ import { ClipboardAddon } from '@xterm/addon-clipboard';
 import { ImageAddon } from '@xterm/addon-image';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 
-import { shell } from './shell';
+import { path, shell } from './shell';
 
 const terminal = new Terminal();
 
@@ -85,5 +85,6 @@ terminal.write(`\x1b[94mminshell\x1b[0m\n\rThis is a minimal shell-like interfac
   cd - Change directory to absolute path only\r
   cdui - Change directory (interactive)\r
   leadman - Runs leadman binary\r
-  lead - Runs lead binary\r\n
-minshell@/none : `);
+  lead - Runs lead binary\r
+  clear- Clears the terminal\r\n
+minshell@${path} : `);

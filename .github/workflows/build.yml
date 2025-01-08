@@ -1,0 +1,68 @@
+name: Build Android Application
+
+on:
+  push:
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Load Key
+        run: |
+          base64 -d <<< "$STORE_FILE" > $RUNNER_TEMP/keystore.jks
+          echo "$RUNNER_TEMP/keystore.jks" > keystore.properties
+        env:
+          STORE_FILE: ${{ secrets.STORE_FILE }}
+
+      - name: Build loader
+        id: ver
+        shell: pwsh
+        run: ./loader.ps1
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bin
+          path: ./app/src/main/jniLibs
+
+      - name: Gradle Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+        env:
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload apk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app.apk
+          path: ./app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload to GH Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          generate_release_notes: true
+          body: |
+            # Lead Adroid ${{ steps.ver.outputs.tag }}
+            This is an auto generated build of Lead Adroid. You can download the latest version from the [official page](https://leadlang.github.io).
+          files: |
+            ./app/build/outputs/apk/release/app-release.apk
+            ./version

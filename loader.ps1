@@ -1,3 +1,12 @@
+npm i -g pnpm
+
+Set-Location ./terminal
+pnpm install
+pnpm build
+Set-Location ..
+
+Copy-Item ./terminal/dist/index.html ./app/src/main/assets/index.html
+
 # Ubuntu 20.10 and newer
 sudo apt-get update
 sudo apt-get -y install podman

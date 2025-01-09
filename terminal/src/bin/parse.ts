@@ -1,9 +1,13 @@
 import { Terminal } from "@xterm/xterm";
+import { defaultPath } from "../shell";
 
-export function parse($path: string, path: (_: string) => void, terminal: Terminal, cmd: string, args: string[]) {
+export async function parse($path: string, path: (_: string) => void, terminal: Terminal, cmd: string, args: string[]) {
   switch (cmd) {
     case "clear":
       terminal.clear();
+      break;
+    case "ls":
+      terminal.writeln(Kotlin.getFiles($path).replace(/\n/g, "\r\n"));
       break;
     case "dir":
       if ($path == "") {
@@ -11,9 +15,15 @@ export function parse($path: string, path: (_: string) => void, terminal: Termin
         break;
       }
 
+      terminal.writeln($path);
+
       break;
     case "cd":
-      const newPath = args.join(" ");
+      let newPath = args.join(" ");
+
+      if (newPath.startsWith("~")) {
+        newPath = newPath.replace("~", defaultPath);
+      }
 
       if (!Kotlin.validatePath(newPath)) {
         terminal.write(`\x1b[31mError: Invalid Path\x1b[m`);
@@ -25,7 +35,17 @@ export function parse($path: string, path: (_: string) => void, terminal: Termin
       break;
     case "cdui":
       terminal.writeln("Contacting UI provider...");
-      break;
+
+      return new Promise((resolve) => {
+        Kotlin.getCwd()
+        globalThis.setDir = (val) => {
+          path(val)
+
+          terminal.writeln(`UI returned ${val}`);
+
+          resolve(null)
+        }
+      });
     case "cat":
       terminal.writeln($path)
       break;

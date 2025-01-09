@@ -10,7 +10,8 @@ export function shell(term: Terminal) {
 }
 
 let cmd: string[] = [];
-export let path: string = (() => {
+
+export let defaultPath: string = (() => {
   try {
     return Kotlin.defaultPath()
   } catch (_) {
@@ -18,7 +19,17 @@ export let path: string = (() => {
   }
 })();
 
-const listener = (data: string) => {
+export let path: string = defaultPath
+
+export const pathToVisible = (path: string) => {
+  if (path.startsWith(defaultPath)) {
+    return path.replace(defaultPath, "~")
+  }
+
+  return path
+}
+
+const listener = async (data: string) => {
   const t = terminal!!;
   // Enter
   if (data === "\r") {
@@ -31,12 +42,12 @@ const listener = (data: string) => {
         const [binary, ...args] = cmd.join("").split(" ");
         cmd = [];
 
-        parse(path, (s) => path = s, t, binary, args);
+        await parse(path, (s) => path = s, t, binary, args);
       }
     } catch (e) {
       t.write(`\x1b[31m${e}\x1b[m`);
     } finally {
-      t.write(`\n\r\rminshell@${path} : `);
+      t.write(`\n\r\rminshell@${pathToVisible(path)} : `);
       dispose = t.onData(listener);
     }
   }

@@ -2,6 +2,7 @@ package com.leadlang.android
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
     super.onActivityReenter(resultCode, data)
 
     if (resultCode == 1) {
+      Log.d("P", "Got result")
       val notif = NotificationManagerCompat.from(this)
       notif.cancel(1)
     }
@@ -251,7 +253,7 @@ class MainActivity : ComponentActivity() {
                   )
                 }
                 1 -> {
-                  Terminal(Modifier.padding(innerPadding))
+                  Terminal(this, Modifier.padding(innerPadding))
                 }
                 else -> {
                   Text("Debug Info", Modifier.padding(innerPadding))

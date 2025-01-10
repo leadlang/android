@@ -7,7 +7,7 @@ interface KotlinInterface {
 
 interface ProcessExecutorInterface {
   execute: (pwd: string, args: string) => void
-  sendToProcess: (data: String) => void
+  sendToProcess: (data: Uint8Array) => void
 }
 
 declare var procEnded: () => void;

@@ -3,6 +3,7 @@ package com.leadlang.android.utils
 import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION
+import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.core.content.ContextCompat
@@ -29,7 +30,7 @@ class ProcessExecutor(private val webview: WebView) {
       .directory(File(pwd))
 
     if (VERSION.SDK_INT > Build.VERSION_CODES.O) {
-      builder.redirectError(ProcessBuilder.Redirect.PIPE)
+      //builder.redirectError(ProcessBuilder.Redirect.PIPE)
       builder.redirectInput(ProcessBuilder.Redirect.PIPE)
       builder.redirectOutput(ProcessBuilder.Redirect.PIPE)
     }
@@ -80,9 +81,9 @@ class ProcessExecutor(private val webview: WebView) {
   }
 
   @JavascriptInterface
-  fun sendToProcess(data: String) {
-    outputStream!!.write(data.toByteArray())
-    outputStream!!.flush()
+  fun sendToProcess(data: ByteArray) {
+    Log.d("LOG", "Added data")
+    outputStream!!.write(data)
   }
 }
 

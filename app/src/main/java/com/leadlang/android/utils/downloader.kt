@@ -99,7 +99,7 @@ fun download(url: String, destination: String, progressCallback: (Float) -> Unit
 
     for (future in futures) {
       val data = future.get()
-      file.writeBytes(data)
+      file.appendBytes(data)
       progressCallback(1.0F)
     }
     Log.i("DWNL", "Download completed successfully!")

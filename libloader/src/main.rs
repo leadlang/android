@@ -4,7 +4,7 @@ use dlopen2::wrapper::{Container, WrapperApi};
 
 #[derive(WrapperApi)]
 struct RunnableSo {
-  run: fn() -> (),
+  run: fn(args: Vec<String>) -> (),
 }
 
 fn main() {
@@ -18,5 +18,5 @@ fn main() {
   println!("Got args: {args:?}");
 
   // We give this process to the so file so that it can execute as it likes
-  run.run();
+  run.run(args);
 }

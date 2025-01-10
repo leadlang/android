@@ -11,8 +11,8 @@ Copy-Item ./terminal/dist/index.html ./app/src/main/assets/index.html
 sudo apt-get update
 sudo apt-get -y install podman
 
-$tag_name = Get-Date -Format "yyyy.mm.dd+HH.mm.ss"
-$version = "$(Get-Date -Format "yyyy.mm.dd")-arm"
+$tag_name = Get-Date -Format "yyyy.MM.dd+HH.mm.ss"
+$version = "$(Get-Date -Format "yyyy.MM.dd")-arm"
 
 $version
 

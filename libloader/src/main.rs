@@ -13,7 +13,8 @@ fn main() {
   let run: Container<RunnableSo> =
     unsafe { Container::load(dll) }.expect("Unable to load dynalic library");
 
-  let args = args().collect::<Vec<String>>();
+  let mut args = args().collect::<Vec<String>>();
+  args.remove(0);
 
   println!("Got args: {args:?}");
 

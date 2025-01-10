@@ -1,11 +1,16 @@
 import { IDisposable, Terminal } from "@xterm/xterm";
 import { parse } from "./bin/parse";
 
-let dispose: IDisposable | undefined = undefined;
+export let dispose: IDisposable | undefined = undefined;
 let terminal: Terminal | undefined = undefined;
 
 export function shell(term: Terminal) {
   terminal = term
+
+  if (dispose) {
+    dispose.dispose();
+  }
+
   dispose = terminal.onData(listener);
 }
 
@@ -31,6 +36,9 @@ export const pathToVisible = (path: string) => {
 
 const listener = async (data: string) => {
   const t = terminal!!;
+
+  console.log("Get ", data);
+
   // Enter
   if (data === "\r") {
     t.write("\r\n");
@@ -59,7 +67,11 @@ const listener = async (data: string) => {
     }
   }
   else {
-    cmd.push(data);
-    t.write(data)
+    var letters = /^[a-zA-Z0-9/@^.\\ *!@#$%^&*()~+_={}|<>]+$/;
+
+    if (letters.test(data)) {
+      cmd.push(data);
+      t.write(data)
+    }
   }
 }

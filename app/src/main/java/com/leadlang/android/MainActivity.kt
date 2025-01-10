@@ -94,6 +94,7 @@ class MainActivity : ComponentActivity() {
         )
 
         ModalNavigationDrawer(
+          gesturesEnabled = currentPage != 1,
           drawerContent = {
             ModalDrawerSheet {
               NavigationDrawerItem(

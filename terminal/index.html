@@ -9,6 +9,37 @@
         display: none !important;
       }
 
+      .action {
+        width: 2rem;
+        background-color: #000000;
+        border: none;
+
+        padding: 10px;
+
+        color: white;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .action:disabled {
+        display: none;
+      }
+
+      #terminal {
+        height: 100%;
+        width: calc(100% - 2rem - 24px);
+      }
+
+      #actions {
+        display: flex;
+        height: 4rem;
+        background: white;
+
+        width: 2rem;
+
+        flex-direction: column;
+      }
+
       body {
         background: #000000;
         /* full width*/
@@ -16,12 +47,72 @@
         /* full height */
         height: 100vh;
         margin: 0 !important;
+
+        color: white;
+
+        display: flex;
+        flex-direction: row;
+      }
+
+      @media (min-height: 500px) {
+        body {
+          flex-direction: column-reverse;
+        }
+
+        #terminal {
+          width: 100%;
+        }
+
+        #actions {
+          width: 100%;
+          flex-direction: row;
+        }
+
+        .action {
+          width: 100%;
+        }
       }
     </style>
+
+    <script>
+      /**
+       * @param {string} key
+       * Dispatches an action based on the given key
+       */
+      var dispatch = (key) => {
+        const keyMap = {
+          ArrowUp: "\x1b[A", // ANSI escape sequence for Up Arrow
+          ArrowDown: "\x1b[B", // ANSI escape sequence for Down Arrow
+          ArrowRight: "\x1b[C", // ANSI escape sequence for Right Arrow
+          ArrowLeft: "\x1b[D", // ANSI escape sequence for Left Arrow
+        };
+
+        window.terminal.input(keyMap[key], true);
+      };
+    </script>
 
     <link rel="stylesheet" href="node_modules/@xterm/xterm/css/xterm.css" />
     <script type="module" src="/src/main.ts"></script>
     <title>Terminal</title>
   </head>
-  <body id="terminal"></body>
+  <body>
+    <div id="terminal"></div>
+    <div id="actions">
+      <button class="action" onclick="dispatch('ArrowUp')">
+        <img src="/up.svg" />
+      </button>
+
+      <button class="action" onclick="dispatch('ArrowDown')">
+        <img src="/up.svg" style="rotate: 180deg" />
+      </button>
+
+      <button class="action" onclick="dispatch('ArrowLeft')">
+        <img src="/up.svg" style="rotate: -90deg" />
+      </button>
+
+      <button class="action" onclick="dispatch('ArrowRight')">
+        <img src="/up.svg" style="rotate: 90deg" />
+      </button>
+    </div>
+  </body>
 </html>

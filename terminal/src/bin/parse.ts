@@ -1,5 +1,6 @@
 import { Terminal } from "@xterm/xterm";
 import { defaultPath } from "../shell";
+import { runBinary } from "./run";
 
 export async function parse($path: string, path: (_: string) => void, terminal: Terminal, cmd: string, args: string[]) {
   switch (cmd) {
@@ -9,6 +10,8 @@ export async function parse($path: string, path: (_: string) => void, terminal: 
     case "ls":
       terminal.writeln(Kotlin.getFiles($path).replace(/\n/g, "\r\n"));
       break;
+    case "leadman":
+      return await runBinary($path, ["leadman", ...args], terminal);
     case "dir":
       if ($path == "") {
         terminal.write(`\x1b[31mError: No path selected\x1b[m`);
@@ -39,9 +42,10 @@ export async function parse($path: string, path: (_: string) => void, terminal: 
       return new Promise((resolve) => {
         Kotlin.getCwd()
         globalThis.setDir = (val) => {
-          path(val)
-
-          terminal.writeln(`UI returned ${val}`);
+          if (val) {
+            path(val)
+            terminal.writeln(`UI returned ${val}`);
+          } else terminal.writeln("Cancelled");
 
           resolve(null)
         }

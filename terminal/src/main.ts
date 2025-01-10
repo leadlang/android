@@ -6,7 +6,9 @@ import { WebLinksAddon } from '@xterm/addon-web-links';
 
 import { path, pathToVisible, shell } from './shell';
 
-const terminal = new Terminal();
+var terminal = new Terminal();
+
+globalThis.terminal = terminal
 
 const fit = new FitAddon();
 

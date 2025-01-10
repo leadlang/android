@@ -5,5 +5,15 @@ interface KotlinInterface {
   getFiles: (arg0: string) => string
 }
 
+interface ProcessExecutorInterface {
+  execute: (pwd: string, args: string) => void
+  sendToProcess: (data: String) => void
+}
+
+declare var procEnded: () => void;
+declare var readProcResp: (_: string) => void;
 declare var setDir: (_: string) => void
+
+declare var terminal: Terminal;
 declare var Kotlin: KotlinInterface
+declare var ProcessExecutor: ProcessExecutorInterface

@@ -21,11 +21,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.Modifier
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
+import com.leadlang.android.utils.ProcessExecutor
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
 
 class BridgeInterface(private val webview: WebView, private val launcher: ManagedActivityResultLauncher<Uri?, Uri?>) {
+  @JavascriptInterface
+  fun runProcess() {
+
+  }
+
   @JavascriptInterface
   fun getFiles(dir: String): String {
     var ret = "\u001b[4mType\u001b[0m \u001B[4mFile\u001B[0m"
@@ -109,6 +115,12 @@ fun WebView(context: Context, modifier: Modifier) {
       """.trimIndent()) {
 
       }
+    } else {
+      webView!!.evaluateJavascript("""
+        globalThis.setDir(null)
+      """.trimIndent()) {
+
+      }
     }
   }
 
@@ -124,6 +136,7 @@ fun WebView(context: Context, modifier: Modifier) {
     update = { webview ->
       webview.settings.javaScriptEnabled = true
       webview.addJavascriptInterface(BridgeInterface(webview, launcher), "Kotlin")
+      webview.addJavascriptInterface(ProcessExecutor(webview), "ProcessExecutor")
 
       webView = webview
 

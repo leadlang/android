@@ -21,7 +21,7 @@ fun downloadChunk(url: String, startByte: Long, endByte: Long, progressCallback:
   connection.setRequestProperty("Range", "bytes=$startByte-$endByte")
 
   val outputStream = ByteArrayOutputStream()
-  val buffer = ByteArray(8192)
+  val buffer = ByteArray((endByte - startByte + 1).toInt())
 
   if (connection.responseCode == HttpURLConnection.HTTP_PARTIAL) {
     val inputStream = BufferedInputStream(connection.inputStream)

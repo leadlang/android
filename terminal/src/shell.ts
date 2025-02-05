@@ -67,9 +67,10 @@ const listener = async (data: string) => {
     }
   }
   else {
-    var letters = /^[a-zA-Z0-9/@^.\\ *!@#$%^&*()~+_={}|<>]+$/;
+    const regex = /^[a-zA-Z0-9/@^.\\ *!@#$%^&*()~+_={}|<>]+$/;
+    const letters = ["-"];
 
-    if (letters.test(data)) {
+    if (data.split("").every((c) => regex.test(c) || letters.includes(c))) {
       cmd.push(data);
       t.write(data)
     }

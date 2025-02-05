@@ -12,6 +12,8 @@ export async function parse($path: string, path: (_: string) => void, terminal: 
       break;
     case "leadman":
       return await runBinary($path, ["leadman", ...args], terminal);
+    case "l":
+      return await runBinary($path, ["leadman", ...args], terminal);
     case "dir":
       if ($path == "") {
         terminal.write(`\x1b[31mError: No path selected\x1b[m`);

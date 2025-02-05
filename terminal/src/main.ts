@@ -87,6 +87,8 @@ terminal.write(`\x1b[94mminshell\x1b[0m\n\rThis is a minimal shell-like interfac
   cd - Change directory to absolute path only\r
   cdui - Change directory (interactive)\r
   leadman - Runs leadman binary\r
+    > Alias - l\r
   lead - Runs lead binary\r
+    > Alias - d\r
   clear - Clears the terminal\r\n
 minshell@${pathToVisible(path)} : `);

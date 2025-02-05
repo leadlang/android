@@ -1,20 +1,18 @@
 package com.leadlang.android.utils
 
-import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.core.content.ContextCompat
 import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.io.File
-import java.io.OutputStream
 import kotlin.concurrent.thread
 
 class ProcessExecutor(private val webview: WebView) {
   private var process: Process? = null
-  private var outputStream: OutputStream? = null
+  private var outputStream: BufferedWriter? = null
   private var reader: BufferedReader? = null
   private var context = webview.context
 
@@ -30,7 +28,6 @@ class ProcessExecutor(private val webview: WebView) {
       .directory(File(pwd))
 
     if (VERSION.SDK_INT > Build.VERSION_CODES.O) {
-      //builder.redirectError(ProcessBuilder.Redirect.PIPE)
       builder.redirectInput(ProcessBuilder.Redirect.PIPE)
       builder.redirectOutput(ProcessBuilder.Redirect.PIPE)
     }
@@ -46,8 +43,10 @@ class ProcessExecutor(private val webview: WebView) {
 
     builder.environment()["LEAD_HOME"] = "${ContextCompat.getDataDir(context)}/leadlang"
 
+    process?.destroy()
+
     process = builder.start()
-    outputStream = process!!.outputStream!!
+    outputStream = process!!.outputStream!!.bufferedWriter()
     reader = process!!.inputStream!!.bufferedReader()
 
     thread {
@@ -57,12 +56,13 @@ class ProcessExecutor(private val webview: WebView) {
           break
         } catch (e: Exception) {
           try {
-            val line = reader!!.readLine();
+            val buffer = CharArray(1024) // Buffer size of 1KB
 
-            if (line != null) {
+            val bytesRead: Int = reader!!.read(buffer)
+            if (bytesRead > 0) {
+              val data = String(buffer.sliceArray(0..bytesRead))
               webview.post {
-                webview.evaluateJavascript("globalThis.readProcResp(`${line.replace("\\", "\\\\").replace("`", "\\`")}`)") {
-
+                webview.evaluateJavascript("globalThis.readProcResp(`${data.replace("\\", "\\\\").replace("`", "\\`")}`)") {
                 }
               }
             }
@@ -81,28 +81,10 @@ class ProcessExecutor(private val webview: WebView) {
   }
 
   @JavascriptInterface
-  fun sendToProcess(data: ByteArray) {
-    Log.d("LOG", "Added data")
+  fun sendToProcess(data: String) {
     outputStream!!.write(data)
+    outputStream!!.flush()
+    outputStream!!.close()
   }
 }
 
-fun runBinary(ctx: Context, library: String, pwd: String, webview: WebView): Process {
-  val libloader = "${ctx.applicationInfo.nativeLibraryDir}/libloader.so"
-
-  val builder = ProcessBuilder(
-      libloader
-    )
-    .directory(File(pwd))
-    .redirectErrorStream(true)
-
-  if (VERSION.SDK_INT > Build.VERSION_CODES.O) {
-    builder.redirectError(ProcessBuilder.Redirect.PIPE)
-    builder.redirectInput(ProcessBuilder.Redirect.PIPE)
-    builder.redirectInput(ProcessBuilder.Redirect.PIPE)
-  }
-
-  builder.environment()["LOAD_DLL"] = library
-
-  return builder.start()!!
-}

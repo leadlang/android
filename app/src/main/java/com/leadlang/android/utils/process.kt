@@ -84,7 +84,6 @@ class ProcessExecutor(private val webview: WebView) {
   fun sendToProcess(data: String) {
     outputStream!!.write(data)
     outputStream!!.flush()
-    outputStream!!.close()
   }
 }
 

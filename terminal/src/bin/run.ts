@@ -23,14 +23,13 @@ export async function runBinary($path: string, args: string[], t: Terminal) {
   console.log($path, args.join(" "));
   ProcessExecutor.execute($path, args.join(" "));
 
-  // if (args.length >= 2 && args[0] == "leadman" && shouldHandleDifferently.leadman.includes(args[1])) {
-  //   return await leadmanSpecial(args);
-  // }
+  if (args.length >= 2 && args[0] == "leadman" && shouldHandleDifferently.leadman.includes(args[1])) {
+    return await leadmanSpecial(args);
+  }
 
   globalThis.readProcResp = (data) => {
     console.log(`Dat ${data}`);
     t.write(data.replace(/\n/g, "\r\n").replace(/\r\r\n/g, "\r\n"));
-    t.write("\r\n");
   }
 
   const resp = t.onData((data) => {
